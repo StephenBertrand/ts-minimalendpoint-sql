@@ -17,7 +17,7 @@ flowchart LR
 - A feature is a folder. `loadFeatures` imports every `configure.ts` and every file named `*Endpoint.ts`. The host has no list of features. Node has no assembly scan, so the convention is the file name.
 - Zod checks the body before any SQL. The store runs parameterized statements. The table script is `0001_create_todos.sql`, recorded in `dbo.SchemaMigrations`. Applying it takes a SQL application lock so two replicas cannot run the same script together.
 - `npm run dev` runs the API through tsx. The published container runs `npm run build`, then `node dist/server.js`. Relative imports in the API end in `.js` so that output loads under plain Node. The SQL script is copied beside the compiled schema module.
-- The flag refreshes about every 5 seconds. No App Configuration connection means the flag is off. A failed refresh keeps the last value.
+- The flag refreshes about every 5 seconds. No App Configuration connection means the flag is off. A failed refresh keeps the last value. The playground turns `HelloNewWorld` on and off with `PUT /hello/flag`. That writes the flag and bumps `Demo:Sentinel`. The next hello call sees it after the refresh.
 - The playground is a second process. It proxies `/api/*` to the API address Aspire injects, and the browser stays on one origin.
 
 ## A feature owns its endpoint and its setup

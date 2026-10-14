@@ -23,5 +23,6 @@ Rules that are already true in this repo. Follow them when adding a feature.
 
 - The AppHost stays C#. It is the orchestrator. The API and the playground stay TypeScript.
 - An `http://` App Configuration endpoint is the emulator. Read it with HTTP. Do not send the SDK's HMAC handshake to it.
-- A missing `ConnectionStrings__appconfiguration` means the flag is off and `/hello` returns Hello World.
+- A missing `ConnectionStrings__appconfiguration` means the flag is off, `/hello` returns Hello World, and `PUT /hello/flag` is refused.
+- Changing the flag writes `.appconfig.featureflag/HelloNewWorld` and increments `Demo:Sentinel`. Do not change the cached hello value in the same call. The reader notices the sentinel on its next refresh.
 - Titles are trimmed. Empty and longer than 200 characters are `400` problem responses and do not reach SQL.

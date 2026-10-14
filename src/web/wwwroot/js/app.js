@@ -4,6 +4,8 @@ const helloEnabled = document.querySelector("#hello-enabled");
 const helloTiming = document.querySelector("#hello-timing");
 const helloLog = document.querySelector("#hello-log");
 const helloCall = document.querySelector("#hello-call");
+const helloToggle = document.querySelector("#hello-toggle");
+const helloFlagNote = document.querySelector("#hello-flag-note");
 const pingStatus = document.querySelector("#ping-status");
 const pingTiming = document.querySelector("#ping-timing");
 const pingLog = document.querySelector("#ping-log");
@@ -189,8 +191,58 @@ todoForm.addEventListener("submit", async (event) => {
   }
 });
 
+function showHelloFlag(flag) {
+  helloToggle.checked = flag.enabled;
+  helloToggle.disabled = !flag.canUpdate;
+  helloFlagNote.textContent = flag.canUpdate
+    ? "Hello picks up a change within about 5 seconds. Call hello again after that."
+    : "App Configuration is not connected, so this flag cannot be changed from the page.";
+}
+
+async function loadHelloFlag() {
+  const response = await fetch("/api/hello/flag");
+  if (!response.ok) {
+    helloFlagNote.textContent = `Could not read the flag (${response.status}).`;
+    helloToggle.disabled = true;
+    return;
+  }
+
+  showHelloFlag(await response.json());
+}
+
+async function saveHelloFlag() {
+  const enabled = helloToggle.checked;
+  helloToggle.disabled = true;
+  helloFlagNote.textContent = "Saving…";
+  try {
+    const response = await fetch("/api/hello/flag", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enabled }),
+    });
+    if (!response.ok) {
+      const problem = await response.json().catch(() => null);
+      const detail = problem?.errors
+        ? Object.values(problem.errors).flat().join(" ")
+        : problem?.detail;
+      throw new Error(detail || `Could not update the flag (${response.status}).`);
+    }
+
+    showHelloFlag(await response.json());
+  } catch (error) {
+    helloToggle.checked = !enabled;
+    helloToggle.disabled = false;
+    helloFlagNote.textContent = error.message;
+    showError(error.message);
+  }
+}
+
 document.querySelector("#hello-call").addEventListener("click", () => callHello().catch((error) => showError(error.message)));
 document.querySelector("#hello-reset").addEventListener("click", resetHello);
+helloToggle.addEventListener("change", () => {
+  saveHelloFlag().catch((error) => showError(error.message));
+});
+loadHelloFlag().catch((error) => showError(error.message));
 document.querySelector("#ping-call").addEventListener("click", () => callPing().catch((error) => showError(error.message)));
 document.querySelector("#ping-reset").addEventListener("click", resetPing);
 

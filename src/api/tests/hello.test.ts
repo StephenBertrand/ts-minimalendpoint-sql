@@ -29,6 +29,41 @@ describe("hello and ping", () => {
     });
   });
 
+  it("reports the flag as fixed when App Configuration is not connected", async () => {
+    const app = await buildApp({ logger: false });
+    const response = await app.inject({ method: "GET", url: "/hello/flag" });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({
+      featureFlag: "HelloNewWorld",
+      enabled: false,
+      canUpdate: false,
+    });
+  });
+
+  it("refuses to change the flag when App Configuration is not connected", async () => {
+    const app = await buildApp({ logger: false });
+    const response = await app.inject({
+      method: "PUT",
+      url: "/hello/flag",
+      payload: { enabled: true },
+    });
+
+    expect(response.statusCode).toBe(409);
+    expect(response.headers["content-type"]).toContain("application/problem+json");
+  });
+
+  it("rejects a flag body that is not a boolean", async () => {
+    const app = await buildApp({ logger: false });
+    const response = await app.inject({
+      method: "PUT",
+      url: "/hello/flag",
+      payload: { enabled: "yes" },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
   it("answers ping", async () => {
     const app = await buildApp({ logger: false });
     const response = await app.inject({ method: "GET", url: "/ping" });
