@@ -1,0 +1,7 @@
+{
+  "name": "ts-minimalendpoint-sql",
+  "private": true,
+  "scripts": {
+    "test": "npm test --prefix src/api"
+  }
+}
