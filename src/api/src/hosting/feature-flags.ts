@@ -4,10 +4,16 @@ import { DefaultAzureCredential } from "@azure/identity";
 const refreshIntervalMs = 5_000;
 const sentinelKey = "Demo:Sentinel";
 
-export const featureFlags = Symbol("featureFlags");
+export const featureFlags: unique symbol = Symbol("featureFlags");
 
 export interface FeatureFlags {
   isEnabled(name: string): Promise<boolean>;
+}
+
+declare module "./services.js" {
+  interface ServiceMap {
+    [featureFlags]: FeatureFlags;
+  }
 }
 
 export const flagsOff: FeatureFlags = {

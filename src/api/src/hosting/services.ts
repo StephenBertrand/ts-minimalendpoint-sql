@@ -1,20 +1,23 @@
+export interface ServiceMap {
+}
+
 export class Services {
   private readonly values = new Map<symbol, unknown>();
 
-  has(key: symbol): boolean {
-    return this.values.has(key);
+  has(key: keyof ServiceMap): boolean {
+    return this.values.has(key as symbol);
   }
 
-  set<T>(key: symbol, value: T): void {
-    this.values.set(key, value);
+  set<K extends keyof ServiceMap>(key: K, value: ServiceMap[K]): void {
+    this.values.set(key as symbol, value);
   }
 
-  get<T>(key: symbol): T {
-    const value = this.values.get(key);
+  get<K extends keyof ServiceMap>(key: K): ServiceMap[K] {
+    const value = this.values.get(key as symbol);
     if (value === undefined) {
       throw new Error("A feature service was used before its configure ran.");
     }
 
-    return value as T;
+    return value as ServiceMap[K];
   }
 }

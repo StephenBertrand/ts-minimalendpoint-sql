@@ -1,7 +1,13 @@
 import sql from "mssql";
-import { toTodoResponse, type TodoResponse, type TodoRow } from "./todo";
+import { toTodoResponse, type TodoResponse, type TodoRow } from "./todo.js";
 
-export const todoStore = Symbol("todoStore");
+export const todoStore: unique symbol = Symbol("todoStore");
+
+declare module "../../hosting/services.js" {
+  interface ServiceMap {
+    [todoStore]: TodoStore;
+  }
+}
 
 const selectedColumns = "Id AS id, Title AS title, IsComplete AS isComplete, CreatedUtc AS createdUtc";
 const insertedColumns = "INSERTED.Id AS id, INSERTED.Title AS title, INSERTED.IsComplete AS isComplete, INSERTED.CreatedUtc AS createdUtc";

@@ -15,19 +15,18 @@ flowchart LR
 
 - One Fastify app. Tests call `buildApp` and `app.inject`. They do not start Aspire.
 - A feature is a folder. `loadFeatures` imports every `configure.ts` and every file named `*Endpoint.ts`. The host has no list of features. Node has no assembly scan, so the convention is the file name.
-- Zod checks the body before any SQL. The store runs parameterized statements. The table script is `0001_create_todos.sql`, recorded in `dbo.SchemaMigrations`.
+- Zod checks the body before any SQL. The store runs parameterized statements. The table script is `0001_create_todos.sql`, recorded in `dbo.SchemaMigrations`. Applying it takes a SQL application lock so two replicas cannot run the same script together.
+- `npm run dev` runs the API through tsx. The published container runs `npm run build`, then `node dist/server.js`. Relative imports in the API end in `.js` so that output loads under plain Node. The SQL script is copied beside the compiled schema module.
 - The flag refreshes about every 5 seconds. No App Configuration connection means the flag is off. A failed refresh keeps the last value.
 - The playground is a second process. It proxies `/api/*` to the API address Aspire injects, and the browser stays on one origin.
 
 ## A feature owns its endpoint and its setup
 
-The shape follows the DomainOne API. There, Startup calls `ConfigureFeatures` once. Each use case is a class named for the action, such as `GetOrderHistoryEndpoint`, and the folder's `AutoConfigureServices` registers that feature's own services. Controllers are then found by the framework.
-
-Here, `hosting/features.ts` is that one load. A feature folder adds `configure.ts` when it has services, and one `*Endpoint.ts` per action. `GetHelloEndpoint` reads the flag. `CreateTodoEndpoint` checks the title and calls the store. The todos `configure.ts` opens SQL and applies `0001_create_todos.sql`. Delete the folder and both the routes and the setup are gone.
+`hosting/features.ts` loads every feature. A feature folder adds `configure.ts` when it has services, and one `*Endpoint.ts` per action. `GetHelloEndpoint` reads the flag. `CreateTodoEndpoint` checks the title and calls the store. The todos `configure.ts` opens SQL and applies `0001_create_todos.sql`. Delete the folder and both the routes and the setup are gone.
 
 ```typescript
 export function endpoint(services: Services) {
-  const store = services.get<TodoStore>(todoStore);
+  const store = services.get(todoStore);
 
   return async function register(app: FastifyInstance): Promise<void> {
     app.post("/todos", async (request, reply) => {

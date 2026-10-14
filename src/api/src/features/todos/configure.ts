@@ -1,8 +1,8 @@
-import { connectionString } from "../../hosting/configuration";
-import { openPool } from "../../hosting/sql-connection";
-import type { Services } from "../../hosting/services";
-import { applySchema } from "./schema";
-import { TodoStore, todoStore } from "./todo-store";
+import { connectionString } from "../../hosting/configuration.js";
+import { openPool } from "../../hosting/sql-connection.js";
+import type { Services } from "../../hosting/services.js";
+import { applySchema } from "./schema.js";
+import { TodoStore, todoStore } from "./todo-store.js";
 
 const connectionName = "todos";
 

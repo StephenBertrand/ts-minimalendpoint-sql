@@ -1,11 +1,11 @@
 import type { FastifyInstance } from "fastify";
-import { sendProblem, validationProblem } from "../../hosting/problem";
-import type { Services } from "../../hosting/services";
-import { createTodo } from "./todo";
-import { TodoStore, todoStore } from "./todo-store";
+import { sendProblem, validationProblem } from "../../hosting/problem.js";
+import type { Services } from "../../hosting/services.js";
+import { createTodo } from "./todo.js";
+import { todoStore } from "./todo-store.js";
 
 export function endpoint(services: Services) {
-  const store = services.get<TodoStore>(todoStore);
+  const store = services.get(todoStore);
 
   return async function register(app: FastifyInstance): Promise<void> {
     app.post("/todos", async (request, reply) => {

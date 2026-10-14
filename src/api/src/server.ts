@@ -1,4 +1,4 @@
-import { buildApp } from "./hosting/app";
+import { buildApp } from "./hosting/app.js";
 
 const app = await buildApp();
 const port = Number(process.env.PORT ?? 3000);

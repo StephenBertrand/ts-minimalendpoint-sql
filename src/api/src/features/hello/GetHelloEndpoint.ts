@@ -1,11 +1,11 @@
 import type { FastifyInstance } from "fastify";
-import { featureFlags, type FeatureFlags } from "../../hosting/feature-flags";
-import type { Services } from "../../hosting/services";
-import { HelloFeatures } from "./hello-features";
-import type { HelloResponse } from "./hello-response";
+import { featureFlags } from "../../hosting/feature-flags.js";
+import type { Services } from "../../hosting/services.js";
+import { HelloFeatures } from "./hello-features.js";
+import type { HelloResponse } from "./hello-response.js";
 
 export function endpoint(services: Services) {
-  const flags = services.get<FeatureFlags>(featureFlags);
+  const flags = services.get(featureFlags);
 
   return async function register(app: FastifyInstance): Promise<void> {
     app.get("/hello", async (): Promise<HelloResponse> => {

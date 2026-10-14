@@ -15,7 +15,8 @@ Rules that are already true in this repo. Follow them when adding a feature.
 - Those files sit in the feature folder, or one folder under it (`todos/CreateTodo/CreateTodoEndpoint.ts`). Deeper than that is not loaded.
 - A feature reads its own connection string inside `configure`. The host does not open pools or flag readers.
 - Tests call `buildApp` and `app.inject`. Do not start Aspire, and do not listen on a port, in a test.
-- A new table is a script in that feature's `migrations` folder, applied by the feature's schema module and recorded in `dbo.SchemaMigrations`.
+- A new table is a script in that feature's `migrations` folder, applied by the feature's schema module and recorded in `dbo.SchemaMigrations`. Schema apply holds `sp_getapplock` for the transaction.
+- Relative imports under `src/api/src` end in `.js`. tsx and the tests map those specifiers back to the `.ts` files. `npm start` runs the compiled `dist`.
 - The playground calls `/api/...`. The web process strips `/api` and forwards to the API. Do not point the browser at the API origin.
 
 ## Leave these alone

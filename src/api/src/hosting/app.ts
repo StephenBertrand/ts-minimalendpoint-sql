@@ -1,7 +1,7 @@
 import Fastify, { type FastifyInstance } from "fastify";
-import { loadFeatures } from "./features";
-import { problemErrorHandler } from "./problem";
-import { Services } from "./services";
+import { loadFeatures } from "./features.js";
+import { problemErrorHandler } from "./problem.js";
+import { Services } from "./services.js";
 
 export type App = FastifyInstance & { services: Services };
 

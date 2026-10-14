@@ -1,7 +1,7 @@
-import { connectionString } from "../../hosting/configuration";
-import { featureFlags, openFeatureFlags } from "../../hosting/feature-flags";
-import type { Services } from "../../hosting/services";
-import { HelloFeatures } from "./hello-features";
+import { connectionString } from "../../hosting/configuration.js";
+import { featureFlags, openFeatureFlags } from "../../hosting/feature-flags.js";
+import type { Services } from "../../hosting/services.js";
+import { HelloFeatures } from "./hello-features.js";
 
 const connectionName = "appconfiguration";
 
